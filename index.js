@@ -1,5 +1,6 @@
 import * as tokens from "./Tokenizer/tokens";
 
+import Tester from "./Tester/";
 import Tokenizer from "./Tokenizer/";
 import Parser from "./Parser/";
 import Evaluator from "./Evaluator/";
@@ -49,6 +50,16 @@ export default class Environment {
      */
     this.evaluator = new Evaluator(this);
 
+    /**
+     * Tester instance
+     * @type {Object}
+     */
+    this.tester = new Tester(
+      this.tokenizer,
+      this.parser,
+      this.evaluator
+    );
+
     this.run(null, null, `
       if (FLAGS.GOT_STARTER_PKMN == 2) {
         FLAGS.GOT_STARTER_PKMN = 1337;
@@ -56,7 +67,7 @@ export default class Environment {
         FLAGS.GOT_STARTER_PKMN = 99;
       }
     `);
-console.log(this.FLAGS);
+
   }
 
   /**

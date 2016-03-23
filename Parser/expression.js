@@ -59,15 +59,18 @@ export function parseExpression(id) {
 
   ast = state === void 0 ? this.parseUnary() : this.parseExpression(id + 1);
 
-  for (;this.acceptPrecedenceState(state);) {
+  for (;this.acceptPrecedenceState(state) === true;) {
     parent = new NODE_LIST.BinaryExpression();
     parent.operator = this.node.name;
-    parent.right = ast;
+    parent.left = ast;
     this.next();
     tmp = (state === void 0 ? this.parseUnary() : this.parseExpression(id + 1));
     if (tmp === null) return (null);
-    parent.left = tmp;
+    parent.right = tmp;
     ast = parent;
+    if (this.accept("SEMICOLON") === true) {
+      this.next();
+    }
   };
 
   return (ast);

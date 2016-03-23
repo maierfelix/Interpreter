@@ -85,6 +85,17 @@ export default class Tokenizer {
   }
 
   /**
+   * Token name validation
+   * @param  {String}  name
+   * @return {Boolean}
+   */
+  isIgnoredName(name) {
+    return (
+      this.IGNORE_LIST.indexOf(name) <= -1
+    );
+  }
+
+  /**
    * Creates number token
    */
   readNumber() {
@@ -170,15 +181,16 @@ export default class Tokenizer {
 
     let c = null;
 
-    let name = this.TOKEN_LIST[this.buffer.charAt(this.index)];
+    let name = null;
 
     let value = "";
 
     for (;;) {
       c = this.buffer.charAt(this.index);
-      if (name !== this.TOKEN_LIST[c]) break;
       value += c;
-      if ((name = this.TOKEN_LIST[value]) === void 0) break;
+      if (this.TOKEN_LIST[value] === void 0) break;
+      name = this.TOKEN_LIST[value];
+      if (this.index > this.length) break;
       this.index++;
     };
 

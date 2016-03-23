@@ -107,20 +107,44 @@ export default class Evaluator {
   }
 
   /**
+   * Is binary expression
+   * @param  {Object}  ast
+   * @return {Boolean}
+   */
+  isBinaryExpression(ast) {
+    return (
+      ast.type === NODE_TYPES.BinaryExpression
+    );
+  }
+
+  /**
    * Evaluate an ast
    * @param  {Object} ast
    * @return {*}
    */
   evaluate(ast) {
+    return (
+      this.evaluateBody(ast)
+    );
+  }
+
+  /**
+   * Evaluate an ast body
+   * @param  {Object} ast
+   * @return {*}
+   */
+  evaluateBody(ast) {
 
     let ii = 0;
     let length = ast.body.length;
 
+    let result = null;
+
     for (; ii < length; ++ii) {
-      this.evalStatement(ast.body[ii]);
+      result = this.evalStatement(ast.body[ii]);
     };
 
-    return void 0;
+    return (result);
 
   }
 
@@ -130,14 +154,20 @@ export default class Evaluator {
    */
   evalStatement(ast) {
 
+    if (this.isBinaryExpression(ast) === true) {
+      return (
+        this.evalBinaryExpression(ast)
+      );
+    }
+
     if (this.isIfStatement(ast) === true) {
       if (ast.condition !== null) {
         /** Condition met */
         if (this.evalExpression(ast.condition).value === true) {
-          return (this.evaluate(ast.consequent));
+          return (this.evaluateBody(ast.consequent));
         }
         if (ast.alternate !== null) {
-          return (this.evaluate(ast.alternate));
+          return (this.evaluateBody(ast.alternate));
         }
       } else {
         throw new Error("Invalid if statement condition");
@@ -253,7 +283,7 @@ export default class Evaluator {
       );
     }
 
-    if (ast.operator === "EQ") {
+    if (ast.operator === "NEQ") {
       return (
         this.evalBinaryExpression(ast.left) !==
         this.evalBinaryExpression(ast.right)
@@ -305,6 +335,20 @@ export default class Evaluator {
     if (ast.operator === "MUL") {
       return (
         this.evalBinaryExpression(ast.left) *
+        this.evalBinaryExpression(ast.right)
+      );
+    }
+
+    if (ast.operator === "DIV") {
+      return (
+        this.evalBinaryExpression(ast.left) /
+        this.evalBinaryExpression(ast.right)
+      );
+    }
+
+    if (ast.operator === "%") {
+      return (
+        this.evalBinaryExpression(ast.left) %
         this.evalBinaryExpression(ast.right)
       );
     }
