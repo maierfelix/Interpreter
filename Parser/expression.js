@@ -27,22 +27,6 @@ export function parseMemberExpression() {
 }
 
 /**
- * Parse call expression
- * @return {Object}
- */
-export function parseCallExpression() {
-
-  let ast = null;
-
-  ast = new NODE_LIST.CallExpression();
-  ast.callee = this.parseUnary();
-  ast.arguments = this.parseArguments();
-
-  return (ast);
-
-}
-
-/**
  * Recursive operator precedence based
  * binary expression parsing
  * @param  {Number} id
